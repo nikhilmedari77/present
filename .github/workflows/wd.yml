@@ -1,38 +1,45 @@
 name: Working Dirs & Shells
 on: [push]
+
 defaults:
   run:
     shell: bash
-    # working-directory: /de/ed
+
 jobs:
   display-wd-info:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Display Working Directory & List Files
         run: |
           pwd
           ls -a
-          echo $GITHUB_SHA
-          echo $GITHUB_REPOSITORY
-          echo $GITHUB_WORKSPACE
-      - name: Change Working Dir
-        working-directory: /home/runner
+          echo "SHA: $GITHUB_SHA"
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Workspace: $GITHUB_WORKSPACE"
+
+      - name: Change Working Directory
+        working-directory: ${{ github.workspace }}
         run: pwd
+
   display-wd-info-windows:
     runs-on: windows-latest
     defaults:
       run:
         shell: pwsh
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Display Working Directory & List Files
         run: |
           Get-Location
           dir
-          echo $env:GITHUB_SHA
-          echo $env:GITHUB_REPOSITORY
-          echo $env:GITHUB_WORKSPACE
-      - name: Python Shell
-        shell: python
-        run: |
-          import platform 
-          print(platform.processor())
+          Write-Output "SHA: $env:GITHUB_SHA"
+          Write-Output "Repository: $env:GITHUB_REPOSITORY"
+          Write-Output "Workspace: $env:GITHUB_WORKSPACE"
+
+      - name: Python Shell Execution
+        run: python -c "import platform; print(platform.processor())"
